@@ -1,0 +1,104 @@
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua")))()
+
+       local Window = MakeWindow({
+         Hub = {
+         Title = "tonghop solastdepzai",
+         Animation = "solast"
+         },
+        Key = {
+        KeySystem = false,
+        Title = "Key System",
+        Description = "",
+        KeyLink = "",
+        Keys = {"1234"},
+        Notifi = {
+        Notifications = true,
+        CorrectKey = "Running the Script...",
+       Incorrectkey = "The key is incorrect",
+       CopyKeyLink = "Copied to Clipboard"
+      }
+    }
+  })
+
+       MinimizeButton({
+       Image = "http://www.roblox.com/asset/?id=70757482056968",
+       Size = {60, 60},
+       Color = Color3.fromRGB(10, 10, 10),
+       Corner = true,
+       Stroke = false,
+       StrokeColor = Color3.fromRGB(255, 0, 0)
+      })
+      
+------ Tab
+     local Tab1o = MakeTab({Name = "discord"})
+     
+     local Tab2o = MakeTab({Name = "script fram"})
+     
+     local Tab3o = MakeTab({Name = "script hop"})
+------- BUTTON
+    
+    AddButton(Tab1o, {
+     Name = "https://discord.gg/AUYkEE4QE",
+    Callback = function()
+	  https://discord.gg/AUYkEE4QE
+  end
+  })
+    
+    AddButton(Tab2o, {
+     Name = "maru hub fake",
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua"))()
+  end
+  })
+  
+    AddButton(Tab2o, {
+     Name = "blue x hub",
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua"))()
+  end
+  })
+  
+    AddButton(Tab2o, {
+     Name = "redz hub beta",
+    Callback = function()
+	  local Settings = {
+JoinTeam = "Pirates"; -- Pirates/Marines
+Translator = true; -- true/false
+}
+getgenv().BETA_VERSION = true
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Scripts/refs/heads/main/main.luau"))(Settings)
+  end
+  })
+  
+    AddButton(Tab2o, {
+     Name = "ngọc bổng gaming",
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/ngocbonggaming/script/refs/heads/main/NgocBongVn.lua"))()
+  end
+  })
+  
+    AddButton(Tab2o, {
+     Name = "hiru hub",
+    Callback = function()
+	  getgenv().Settings = { JoinTeam = true, Team = "Marines" } loadstring(game:HttpGet("https://raw.githubusercontent.com/kiddohiru/Source/main/BloxFruits.lua"))()
+  end
+  })
+  
+   AddButton(Tab2o, {
+     Name = "banana hub fake",
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/thunhchk/Bananahub1/refs/heads/main/bananahubv1.txt"))()
+  end
+  })
+  
+    AddButton(Tab3o, {
+     Name = "teddy hop(key:teddyhubhopnewnek)",
+    Callback = function()
+	  repeat task.wait() until game:IsLoaded() and game:GetService("Players") and game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui")loadstring(game:HttpGet("https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM"))()
+  })
+  
+   AddButton(Tab3o, {
+     Name = "vision x hop",
+    Callback = function()
+	  loadstring(game:HttpGet("https://raw.githubusercontent.com/xSync-gg/VisionX/refs/heads/main/Server_Finder.lua"))()    
+  })
