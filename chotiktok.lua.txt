@@ -1,0 +1,157 @@
+-- ==========================================================
+-- Slap Battles Kaitun Script - Tracking & 0.7s Rotation by Sonion for LO
+-- ==========================================================
+
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+
+-- 1. Tạo giao diện nút bấm Toggle "solast" (Mặc định BẬT - ON)
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SolastKaitunGui"
+pcall(function()
+    screenGui.Parent = CoreGui
+end)
+if not screenGui.Parent then
+    screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "SolastToggleButton"
+toggleButton.Size = UDim2.new(0, 130, 0, 45)
+toggleButton.Position = UDim2.new(0, 30, 0, 150)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0) -- Mặc định là ON (Xanh)
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.TextSize = 16
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.Text = "solast: ON"
+toggleButton.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = toggleButton
+
+-- Trạng thái mặc định là true (Tự động bật sẵn)
+local isRunning = true
+
+toggleButton.MouseButton1Click:Connect(function()
+    isRunning = not isRunning
+    if isRunning then
+        toggleButton.Text = "solast: ON"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+    else
+        toggleButton.Text = "solast: OFF"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    end
+end)
+
+-- 2. Logic chính
+local function getRoot()
+    local char = LocalPlayer.Character
+    if char then
+        return char:FindFirstChild("HumanoidRootPart")
+    end
+    return nil
+end
+
+local function enterRedPortal()
+    local root = getRoot()
+    if not root then return end
+    
+    if root.Position.Y > 30 then
+        root.CFrame = CFrame.new(-1210.0, 328.2, 4.2)
+        task.wait(1.5)
+    end
+end
+
+local function isInArena(player)
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return false end
+    return player.Character.HumanoidRootPart.Position.Y < 25
+end
+
+-- Biến lưu vị trí index để xoay vòng qua từng người chơi
+local currentIndex = 1
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        if isRunning then
+            pcall(function()
+                local root = getRoot()
+                if not root then return end
+
+                -- Nếu đang ở sảnh chờ, bay ngay vào cổng đỏ xuống arena
+                if root.Position.Y > 30 then
+                    enterRedPortal()
+                    return
+                end
+
+                -- Trang bị găng tay
+                local char = LocalPlayer.Character
+                if not char then return end
+                local tool = char:FindFirstChildOfClass("Tool")
+                if not tool then
+                    local backpack = LocalPlayer:FindFirstChild("Backpack")
+                    if backpack then
+                        for _, item in ipairs(backpack:GetChildren()) do
+                            if item:IsA("Tool") then
+                                char.Humanoid:EquipTool(item)
+                                task.wait(0.1)
+                                tool = item
+                                break
+                            end
+                        end
+                    end
+                end
+
+                -- Lọc danh sách những người chơi thực sự có mặt trong đấu trường
+                local validTargets = {}
+                for _, p in ipairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") and p.Character.Humanoid.Health > 0 and isInArena(p) then
+                        table.insert(validTargets, p)
+                    end
+                end
+
+                -- Nếu có người trong đấu trường thì tiến hành tát xoay vòng có tính năng theo dõi
+                if #validTargets > 0 then
+                    if currentIndex > #validTargets then
+                        currentIndex = 1
+                    end
+
+                    local target = validTargets[currentIndex]
+                    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                        -- Theo dõi liên tục mục tiêu này trong vòng 0.7 giây (Dù họ di chuyển vẫn bám theo bồi đòn tát)
+                        local startTime = tick()
+                        while tick() - startTime < 0.7 do
+                            if not isRunning then break end
+                            local currentRoot = getRoot()
+                            local targetChar = target.Character
+                            
+                            if not currentRoot or currentRoot.Position.Y > 30 or not targetChar or not targetChar:FindFirstChild("HumanoidRootPart") or not targetChar:FindFirstChild("Humanoid") or targetChar.Humanoid.Health <= 0 or not isInArena(target) then
+                                break
+                            end
+                            
+                            local targetRoot = targetChar.HumanoidRootPart
+                            -- Cập nhật liên tục vị trí bám sát sau lưng mục tiêu (Tracking Mode)
+                            currentRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 3)
+                            
+                            -- Kích hoạt găng tay liên tục
+                            if tool and tool.Parent == char then
+                                tool:Activate()
+                            elseif tool and tool.Parent == LocalPlayer.Backpack then
+                                char.Humanoid:EquipTool(tool)
+                            end
+                            
+                            task.wait(0.05) -- Tốc độ cập nhật tracking mượt mà
+                        end
+                    end
+
+                    -- Chuyển sang index của người tiếp theo
+                    currentIndex = currentIndex + 1
+                end
+            end)
+        end
+    end
+end)
+
+print("Slap Battles Tracking Kaitun Loaded Successfully for LO!")
